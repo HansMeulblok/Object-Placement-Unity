@@ -8,10 +8,16 @@ public class ObjectPlacement : MonoBehaviour
     private Camera cam;
 
     [SerializeField] private GameObject prefab;
+    private GameObject previewObject;
+    private Color previewColour;
     // Start is called before the first frame update
     void Start()
     {
         cam = Camera.main;
+        previewObject = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+        previewColour = previewObject.GetComponent<SpriteRenderer>().color;
+        previewColour.a = 0.5f;
+        previewObject.GetComponent<SpriteRenderer>().color = previewColour;
     }
 
     // Update is called once per frame
@@ -19,7 +25,8 @@ public class ObjectPlacement : MonoBehaviour
     {
         mousePos = Input.mousePosition;
         Vector3 worldpos = cam.ScreenToWorldPoint(mousePos);
-        Debug.Log(worldpos);
+
+        previewObject.transform.position = new Vector3(worldpos.x, worldpos.y, 0);
 
         if(Input.GetButtonDown("Fire1"))
         {

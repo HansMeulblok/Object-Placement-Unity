@@ -6,6 +6,7 @@ public class ObjectPlacement : MonoBehaviour
 {
     private Vector3 mousePos;
     private Camera cam;
+    private bool isColliding =  false;
 
     [SerializeField] private GameObject prefab;
     private GameObject previewObject;
@@ -18,17 +19,24 @@ public class ObjectPlacement : MonoBehaviour
         previewColour = previewObject.GetComponent<SpriteRenderer>().color;
         previewColour.a = 0.5f;
         previewObject.GetComponent<SpriteRenderer>().color = previewColour;
+
+        if(previewObject.GetComponent<Collider2D>() == null)
+        {
+            Debug.Log("added collider");
+            previewObject.AddComponent<BoxCollider2D>();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         mousePos = Input.mousePosition;
         Vector3 worldpos = cam.ScreenToWorldPoint(mousePos);
 
         previewObject.transform.position = new Vector3(worldpos.x, worldpos.y, 0);
-
-        if(Input.GetButtonDown("Fire1"))
+        
+        if(Input.GetButtonDown("Fire1") && !isColliding)
         {
             //instantiate
             Instantiate(prefab, new Vector3(worldpos.x, worldpos.y, 0), Quaternion.identity);

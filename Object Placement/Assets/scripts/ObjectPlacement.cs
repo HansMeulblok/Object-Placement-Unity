@@ -11,8 +11,18 @@ public class ObjectPlacement : MonoBehaviour
 
     [HideInInspector] 
     public bool isColliding =  false;
+    private bool rotationMode = false;
     private GameObject previewObject;
+    private GameObject currentObject;
     private Color previewColour;
+
+    float targetAngle = 0;
+    float degreesPerClick = 2;
+    float secsPerClick = 0.3f;
+   
+    private float curAngle = 0f;
+    private float startAngle=0f;
+    private float startTime=0f;
 
     void Start()
     {
@@ -59,11 +69,36 @@ public class ObjectPlacement : MonoBehaviour
 
         previewObject.transform.position = new Vector3(worldpos.x, worldpos.y, 0);
         
-        if(Input.GetButtonDown("Fire1") && !isColliding)
+        if(Input.GetButtonDown("Fire1") && !isColliding && !rotationMode)
         {
             //instantiate
-            Instantiate(prefab, new Vector3(worldpos.x, worldpos.y, 0), Quaternion.identity);
+            currentObject = Instantiate(prefab, new Vector3(worldpos.x, worldpos.y, 0), Quaternion.identity);
+            rotationMode = true;
         }
- 
+
+        if(rotationMode)
+        {
+            RotateObject();
+        }
+
+
+    }
+
+    void RotateObject()
+    {
+        Debug.Log(Input.GetAxis("Mouse ScrollWheel"));
+        var clicks = Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
+        if (clicks != 0) {
+            targetAngle += clicks * degreesPerClick;
+            startAngle = curAngle;
+            startTime = Time.time;
+        }
+       
+        var t = (Time.time - startTime) / secsPerClick;
+        if (t <= 1) {
+            curAngle = Mathf.Lerp(startAngle, targetAngle, t);
+            // finally, do the actual rotation
+            currentObject.transform.rotation = new Quaternion(0,curAngle, 0, 0);
+        }
     }
 }

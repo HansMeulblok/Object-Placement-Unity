@@ -15,15 +15,9 @@ public class ObjectPlacement : MonoBehaviour
     private GameObject previewObject;
     private GameObject currentObject;
     private Color previewColour;
-
-    float targetAngle = 0;
-    float degreesPerClick = 2;
-    float secsPerClick = 0.3f;
-   
-    private float curAngle = 0f;
-    private float startAngle=0f;
-    private float startTime=0f;
-
+    bool readyToPlace;
+    float cooldownTimer;
+    float maxcoolDown = 0.5f;
     void Start()
     {
         cam = Camera.main;
@@ -40,7 +34,6 @@ public class ObjectPlacement : MonoBehaviour
 
         if(previewObject.GetComponent<Collider2D>() == null)
         {
-            Debug.Log("added collider");
             BoxCollider2D col = previewObject.AddComponent<BoxCollider2D>();
             col.isTrigger = true;
         }
@@ -63,17 +56,12 @@ public class ObjectPlacement : MonoBehaviour
 
     void Update()
     {
-        
-        mousePos = Input.mousePosition;
-        Vector3 worldpos = cam.ScreenToWorldPoint(mousePos);
 
-        previewObject.transform.position = new Vector3(worldpos.x, worldpos.y, 0);
-        
-        if(Input.GetButtonDown("Fire1") && !isColliding && !rotationMode)
+        cooldownTimer += Time.deltaTime;
+        if(cooldownTimer >= maxcoolDown)
         {
-            //instantiate
-            currentObject = Instantiate(prefab, new Vector3(worldpos.x, worldpos.y, 0), Quaternion.identity);
-            rotationMode = true;
+            readyToPlace = true;
+            cooldownTimer = maxcoolDown;
         }
 
         if(rotationMode)
@@ -81,24 +69,43 @@ public class ObjectPlacement : MonoBehaviour
             RotateObject();
         }
 
+        mousePos = Input.mousePosition;
+        Vector3 worldpos = cam.ScreenToWorldPoint(mousePos);
 
+        previewObject.transform.position = new Vector3(worldpos.x, worldpos.y, 0);
+        
+        if(Input.GetButtonDown("Fire1") && !isColliding && !rotationMode && readyToPlace)
+        {
+            //instantiate
+            currentObject = Instantiate(prefab, new Vector3(worldpos.x, worldpos.y, 0), Quaternion.identity);
+            previewObject.SetActive(false);
+            rotationMode = true;
+        }
     }
 
     void RotateObject()
     {
-        Debug.Log(Input.GetAxis("Mouse ScrollWheel"));
         var clicks = Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
-        if (clicks != 0) {
-            targetAngle += clicks * degreesPerClick;
-            startAngle = curAngle;
-            startTime = Time.time;
+
+        if(clicks != 0)
+        {
+            Vector3 rotationVector = currentObject.transform.rotation.eulerAngles;
+            rotationVector.z += clicks;
+            currentObject.transform.rotation = Quaternion.Euler(rotationVector);
         }
-       
-        var t = (Time.time - startTime) / secsPerClick;
-        if (t <= 1) {
-            curAngle = Mathf.Lerp(startAngle, targetAngle, t);
-            // finally, do the actual rotation
-            currentObject.transform.rotation = new Quaternion(0,curAngle, 0, 0);
+
+        if(Input.GetButtonDown("Fire1"))
+        {
+            resetCooldown();
+            rotationMode = false;
+            previewObject.SetActive(true);
         }
+
+    }
+
+    void resetCooldown()
+    {
+        readyToPlace = false;
+        cooldownTimer = 0;
     }
 }

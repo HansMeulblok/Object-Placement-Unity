@@ -14,6 +14,8 @@ namespace Tests
         public void SetUp()
         {
             GameObject objectPlacementObject = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/ObjectPlacement"));
+            GameObject camera = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/Main Camera"));
+
             objectPlacement = objectPlacementObject.GetComponent<ObjectPlacement>();
         }
 
@@ -26,11 +28,13 @@ namespace Tests
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
         [UnityTest]
-    public IEnumerator AsteroidTakesTwoHits()
-    {
-
-        yield return new WaitForSeconds(0.1f);
-
-    }
+        public IEnumerator RotatePreview()
+        {
+            objectPlacement.setPlacementMode(true);
+            GameObject pvObject = objectPlacement.GetPreviewObject();
+            objectPlacement.scrollWheelInput = 10;
+            yield return new WaitForSeconds(0.5f);
+            UnityEngine.Assertions.Assert.AreNotEqual(0, objectPlacement.GetPreviewObject().transform.rotation.z);
+        }
     }
 }

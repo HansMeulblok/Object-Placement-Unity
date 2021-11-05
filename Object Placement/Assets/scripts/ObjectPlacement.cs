@@ -6,6 +6,10 @@ public class ObjectPlacement : MonoBehaviour
 {
     [HideInInspector] 
     public bool isColliding =  false;
+    [HideInInspector] 
+    public Vector3 worldPos;
+    [HideInInspector] 
+    public int scrollWheelInput;
     [SerializeField] private GameObject prefab;
     [SerializeField] private List<string> colliderTags = new List<string>();
     private Vector3 mousePos;
@@ -18,6 +22,7 @@ public class ObjectPlacement : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
+        Debug.Log(cam);
 
         previewObject = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
 
@@ -57,24 +62,31 @@ public class ObjectPlacement : MonoBehaviour
         RotateObject();
 
         mousePos = Input.mousePosition;
-        Vector3 worldpos = cam.ScreenToWorldPoint(mousePos);
+        if(mousePos == Vector3.zero)
+        {
+            worldPos = Vector3.zero;
+        }
+        else
+        {
+            worldPos = cam.ScreenToWorldPoint(mousePos);
+        }
 
-        previewObject.transform.position = new Vector3(worldpos.x, worldpos.y, 0);
+        previewObject.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
         
         if(Input.GetButtonDown("Fire1") && objectPlacementActive && !isColliding)
         {
-            currentObject = Instantiate(prefab, new Vector3(worldpos.x, worldpos.y, 0), previewObject.transform.rotation);
+            currentObject = Instantiate(prefab, new Vector3(worldPos.x, worldPos.y, 0), previewObject.transform.rotation);
         }
     }
 
     void RotateObject()
     {
-        int clicks = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
+        scrollWheelInput = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
 
-        if(clicks != 0)
+        if(scrollWheelInput != 0)
         {
             Vector3 rotationVector = previewObject.transform.rotation.eulerAngles;
-            rotationVector.z += clicks;
+            rotationVector.z += scrollWheelInput;
             previewObject.transform.rotation = Quaternion.Euler(rotationVector);
         }
     }
@@ -82,5 +94,10 @@ public class ObjectPlacement : MonoBehaviour
     public void setPlacementMode(bool placementState)
     {
         objectPlacementActive = placementState;
+    }
+
+    public GameObject GetPreviewObject()
+    {
+        return previewObject;
     }
 }

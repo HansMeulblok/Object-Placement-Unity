@@ -4,20 +4,17 @@ using UnityEngine;
 
 public class ObjectPlacement : MonoBehaviour
 {
+    [HideInInspector] 
+    public bool isColliding =  false;
     [SerializeField] private GameObject prefab;
     [SerializeField] private List<string> colliderTags = new List<string>();
     private Vector3 mousePos;
     private Camera cam;
-
-    [HideInInspector] 
-    public bool isColliding =  false;
-    private bool rotationMode = false;
     private GameObject previewObject;
     private GameObject currentObject;
     private Color previewColour;
-    bool readyToPlace;
-    float cooldownTimer;
-    float maxcoolDown = 0.5f;
+    private bool objectPlacementActive = true;
+
     void Start()
     {
         cam = Camera.main;
@@ -26,9 +23,10 @@ public class ObjectPlacement : MonoBehaviour
 
         previewColour = previewObject.GetComponent<SpriteRenderer>().color;
         previewColour.a = 0.5f;
-        previewObject.GetComponent<SpriteRenderer>().color = previewColour;
 
+        previewObject.GetComponent<SpriteRenderer>().color = previewColour;
         PreviewObject pv = previewObject.AddComponent<PreviewObject>();
+        
         pv.tags = colliderTags;
         pv.objectPlacement = this.gameObject.GetComponent<ObjectPlacement>();
 
@@ -56,56 +54,33 @@ public class ObjectPlacement : MonoBehaviour
 
     void Update()
     {
-
-        cooldownTimer += Time.deltaTime;
-        if(cooldownTimer >= maxcoolDown)
-        {
-            readyToPlace = true;
-            cooldownTimer = maxcoolDown;
-        }
-
-        if(rotationMode)
-        {
-            RotateObject();
-        }
+        RotateObject();
 
         mousePos = Input.mousePosition;
         Vector3 worldpos = cam.ScreenToWorldPoint(mousePos);
 
         previewObject.transform.position = new Vector3(worldpos.x, worldpos.y, 0);
         
-        if(Input.GetButtonDown("Fire1") && !isColliding && !rotationMode && readyToPlace)
+        if(Input.GetButtonDown("Fire1") && objectPlacementActive && !isColliding)
         {
-            //instantiate
-            currentObject = Instantiate(prefab, new Vector3(worldpos.x, worldpos.y, 0), Quaternion.identity);
-            previewObject.SetActive(false);
-            rotationMode = true;
+            currentObject = Instantiate(prefab, new Vector3(worldpos.x, worldpos.y, 0), previewObject.transform.rotation);
         }
     }
 
     void RotateObject()
     {
-        var clicks = Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
+        int clicks = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
 
         if(clicks != 0)
         {
-            Vector3 rotationVector = currentObject.transform.rotation.eulerAngles;
+            Vector3 rotationVector = previewObject.transform.rotation.eulerAngles;
             rotationVector.z += clicks;
-            currentObject.transform.rotation = Quaternion.Euler(rotationVector);
+            previewObject.transform.rotation = Quaternion.Euler(rotationVector);
         }
-
-        if(Input.GetButtonDown("Fire1"))
-        {
-            resetCooldown();
-            rotationMode = false;
-            previewObject.SetActive(true);
-        }
-
     }
 
-    void resetCooldown()
+    public void setPlacementMode(bool placementState)
     {
-        readyToPlace = false;
-        cooldownTimer = 0;
+        objectPlacementActive = placementState;
     }
 }

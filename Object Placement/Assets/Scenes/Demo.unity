@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 199451189}
   - component: {fileID: 199451190}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: ObjectPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,7 +146,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 199451188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7237488, y: -2.7025907, z: -1.4697167}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -164,10 +164,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed557c4bfc462fe4493bf8f61baf07db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isColliding: 0
   prefab: {fileID: 8783167735801709339, guid: 2ff23bcd327b2ce4b890844c3e4650e2, type: 3}
   colliderTags:
   - Test
-  isColliding: 0
 --- !u!1 &247521715
 GameObject:
   m_ObjectHideFlags: 0

@@ -38,6 +38,13 @@ namespace Tests
         }
 
         [UnityTest]
+        public IEnumerator ObjectPreview()
+        {        
+            yield return new WaitForSeconds(0.1f);
+            UnityEngine.Assertions.Assert.IsNotNull(objectPlacement.GetPreviewObject());
+        }
+
+        [UnityTest]
         public IEnumerator RotatePreview()
         {
             objectPlacement.setPlacementMode(true);

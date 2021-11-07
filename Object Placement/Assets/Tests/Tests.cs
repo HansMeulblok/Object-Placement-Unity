@@ -27,6 +27,16 @@ namespace Tests
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
+
+        [UnityTest]
+        public IEnumerator ObjectSpawn()
+        {
+            objectPlacement.setPlacementMode(true);
+            objectPlacement.SpawnObject();
+            yield return new WaitForSeconds(0.1f);
+            UnityEngine.Assertions.Assert.IsNotNull(objectPlacement.GetCurrentObject());
+        }
+
         [UnityTest]
         public IEnumerator RotatePreview()
         {
@@ -35,6 +45,6 @@ namespace Tests
             objectPlacement.scrollWheelInput = 10;
             yield return new WaitForSeconds(0.1f);
             UnityEngine.Assertions.Assert.AreNotEqual(0, objectPlacement.GetPreviewObject().transform.rotation.z);
-        }
+        }     
     }
 }

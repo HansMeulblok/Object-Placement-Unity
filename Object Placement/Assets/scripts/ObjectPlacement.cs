@@ -18,13 +18,70 @@ public class ObjectPlacement : MonoBehaviour
     private GameObject currentObject;
     private Color previewColour;
     private bool objectPlacementActive = true;
-    private bool inputActive;
 
     void Start()
     {
         cam = Camera.main;
-        Debug.Log(cam);
+        InitPreviewObject(); 
+    }
 
+    void Update()
+    {
+        RotateObject();
+
+        mousePos = Input.mousePosition;
+        if(mousePos == Vector3.zero)
+        {
+            worldPos = Vector3.zero;
+        }
+        else
+        {
+            worldPos = cam.ScreenToWorldPoint(mousePos);
+        }
+
+        previewObject.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+        
+        if(Input.GetButtonDown("Fire1") && objectPlacementActive && !isColliding)
+        {
+            SpawnObject();
+        }
+    }
+
+    void RotateObject()
+    {
+        if((int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100) > 0 )
+        {
+            scrollWheelInput = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
+        }
+
+        if(scrollWheelInput != 0)
+        {
+            Vector3 rotationVector = previewObject.transform.rotation.eulerAngles;
+            rotationVector.z += scrollWheelInput;
+            previewObject.transform.rotation = Quaternion.Euler(rotationVector);
+        }
+    }
+    public void SpawnObject()
+    {
+        currentObject = Instantiate(prefab, previewObject.transform.position, previewObject.transform.rotation);
+    }
+
+    public void setPlacementMode(bool placementState)
+    {
+        objectPlacementActive = placementState;
+    }
+    public GameObject GetPreviewObject()
+    {
+        return previewObject;
+    }
+
+    public GameObject GetCurrentObject()
+    {
+        return currentObject;
+    }
+
+    private void InitPreviewObject()
+    {
         previewObject = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
 
         previewColour = previewObject.GetComponent<SpriteRenderer>().color;
@@ -56,54 +113,5 @@ public class ObjectPlacement : MonoBehaviour
         {
             previewObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         }
-    }
-
-    void Update()
-    {
-        RotateObject();
-
-        mousePos = Input.mousePosition;
-        if(mousePos == Vector3.zero)
-        {
-            inputActive = false;
-            worldPos = Vector3.zero;
-        }
-        else
-        {
-            inputActive = true;
-            worldPos = cam.ScreenToWorldPoint(mousePos);
-        }
-
-        previewObject.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
-        
-        if(Input.GetButtonDown("Fire1") && objectPlacementActive && !isColliding)
-        {
-            currentObject = Instantiate(prefab, new Vector3(worldPos.x, worldPos.y, 0), previewObject.transform.rotation);
-        }
-    }
-
-    void RotateObject()
-    {
-        if((int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100) > 0 )
-        {
-            scrollWheelInput = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
-        }
-
-        if(scrollWheelInput != 0)
-        {
-            Vector3 rotationVector = previewObject.transform.rotation.eulerAngles;
-            rotationVector.z += scrollWheelInput;
-            previewObject.transform.rotation = Quaternion.Euler(rotationVector);
-        }
-    }
-
-    public void setPlacementMode(bool placementState)
-    {
-        objectPlacementActive = placementState;
-    }
-
-    public GameObject GetPreviewObject()
-    {
-        return previewObject;
     }
 }

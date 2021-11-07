@@ -18,6 +18,7 @@ public class ObjectPlacement : MonoBehaviour
     private GameObject currentObject;
     private Color previewColour;
     private bool objectPlacementActive = true;
+    private bool inputActive;
 
     void Start()
     {
@@ -64,10 +65,12 @@ public class ObjectPlacement : MonoBehaviour
         mousePos = Input.mousePosition;
         if(mousePos == Vector3.zero)
         {
+            inputActive = false;
             worldPos = Vector3.zero;
         }
         else
         {
+            inputActive = true;
             worldPos = cam.ScreenToWorldPoint(mousePos);
         }
 
@@ -81,7 +84,10 @@ public class ObjectPlacement : MonoBehaviour
 
     void RotateObject()
     {
-        scrollWheelInput = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
+        if((int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100) > 0 )
+        {
+            scrollWheelInput = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
+        }
 
         if(scrollWheelInput != 0)
         {

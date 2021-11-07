@@ -33,7 +33,7 @@ namespace Tests
             objectPlacement.setPlacementMode(true);
             GameObject pvObject = objectPlacement.GetPreviewObject();
             objectPlacement.scrollWheelInput = 10;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
             UnityEngine.Assertions.Assert.AreNotEqual(0, objectPlacement.GetPreviewObject().transform.rotation.z);
         }
     }

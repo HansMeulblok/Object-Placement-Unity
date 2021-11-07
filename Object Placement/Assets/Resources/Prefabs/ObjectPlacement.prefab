@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isColliding: 0
+  worldPos: {x: 0, y: 0, z: 0}
+  scrollWheelInput: 0
   prefab: {fileID: 8783167735801709339, guid: 2ff23bcd327b2ce4b890844c3e4650e2, type: 3}
-  colliderTags:
-  - Test
+  colliderTags: []

@@ -25,9 +25,6 @@ namespace Tests
             Object.Destroy(objectPlacement.gameObject);
         }
 
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-
         [UnityTest]
         public IEnumerator ObjectSpawn()
         {
@@ -43,6 +40,15 @@ namespace Tests
             yield return new WaitForSeconds(0.1f);
             UnityEngine.Assertions.Assert.IsNotNull(objectPlacement.GetPreviewObject());
         }
+
+        [UnityTest]
+        public IEnumerator ObjectCollision()
+        {
+            GameObject obstacle = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/Obstacle"), objectPlacement.GetPreviewObject().transform.position, Quaternion.identity);
+            objectPlacement.AddTag("Test");
+            yield return new WaitForSeconds(0.1f);
+            UnityEngine.Assertions.Assert.IsTrue(objectPlacement.IsColliding());
+             }
 
         [UnityTest]
         public IEnumerator RotatePreview()

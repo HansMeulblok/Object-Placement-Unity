@@ -36,7 +36,8 @@ public class PreviewObject : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if(other.CompareTag(currentTag))
+
+        if(currentTag != null && other.CompareTag(currentTag))
         {
             objectPlacement.isColliding = false;
             sprite.color = originalColor;

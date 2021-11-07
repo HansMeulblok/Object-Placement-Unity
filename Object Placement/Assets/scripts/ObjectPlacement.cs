@@ -80,6 +80,16 @@ public class ObjectPlacement : MonoBehaviour
         return currentObject;
     }
 
+    public bool IsColliding()
+    {
+        return isColliding;
+    }
+
+    public void AddTag(string tag)
+    {
+        colliderTags.Add(tag);
+    }
+
     private void InitPreviewObject()
     {
         previewObject = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);

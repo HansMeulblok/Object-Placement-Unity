@@ -10,6 +10,7 @@ public class ObjectPlacement : MonoBehaviour
     public Vector3 worldPos;
     [HideInInspector] 
     public int scrollWheelInput;
+    public bool Mode2D = true;
     [SerializeField] private GameObject prefab;
     [SerializeField] private List<string> colliderTags = new List<string>();
     private Vector3 mousePos;
@@ -22,12 +23,22 @@ public class ObjectPlacement : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-        InitPreviewObject(); 
+
+        if(Mode2D)
+        {
+            Debug.Log("2d mode");
+            Init2DPreviewObject(); 
+        }
+        else
+        {
+            Debug.Log("3d mode");
+            Init3DPreviewObject();
+        }
     }
 
     void Update()
     {
-        RotateObject();
+        Update2DPreview();
 
         mousePos = Input.mousePosition;
         if(mousePos == Vector3.zero)
@@ -39,7 +50,6 @@ public class ObjectPlacement : MonoBehaviour
             worldPos = cam.ScreenToWorldPoint(mousePos);
         }
 
-        previewObject.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
         
         if(Input.GetButtonDown("Fire1") && objectPlacementActive && !isColliding)
         {
@@ -90,15 +100,21 @@ public class ObjectPlacement : MonoBehaviour
         colliderTags.Add(tag);
     }
 
-    private void InitPreviewObject()
+    private void Update2DPreview()
+    {
+        RotateObject();
+        previewObject.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+    }
+
+    private void Init2DPreviewObject()
     {
         previewObject = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
 
         previewColour = previewObject.GetComponent<SpriteRenderer>().color;
         previewColour.a = 0.5f;
-
         previewObject.GetComponent<SpriteRenderer>().color = previewColour;
-        PreviewObject pv = previewObject.AddComponent<PreviewObject>();
+
+        PreviewObject2D pv = previewObject.AddComponent<PreviewObject2D>();
         
         pv.tags = colliderTags;
         pv.objectPlacement = this.gameObject.GetComponent<ObjectPlacement>();
@@ -123,5 +139,42 @@ public class ObjectPlacement : MonoBehaviour
         {
             previewObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         }
+    }
+
+    private void Init3DPreviewObject()
+    {
+        previewObject = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+
+        previewColour = previewObject.GetComponent<MeshRenderer>().material.color;
+        previewColour.a = 0.5f;
+        previewObject.GetComponent<MeshRenderer>().material.color = previewColour;
+
+        PreviewObject3D pv = previewObject.AddComponent<PreviewObject3D>();
+
+        pv.tags = colliderTags;
+        pv.objectPlacement = this.gameObject.GetComponent<ObjectPlacement>();
+
+        if(previewObject.GetComponent<Collider>() == null)
+        {
+            BoxCollider col = previewObject.AddComponent<BoxCollider>();
+            col.isTrigger = true;
+        }
+        else
+        {
+            previewObject.GetComponent<Collider>().isTrigger = true;
+        }
+
+        if(previewObject.GetComponent<Rigidbody>() == null)
+        {
+            Rigidbody rb = previewObject.AddComponent<Rigidbody>();
+            rb.useGravity = false;
+            rb.drag = 0;
+        }
+        else
+        {
+            previewObject.GetComponent<Rigidbody>().useGravity = false;
+        }
+
+
     }
 }

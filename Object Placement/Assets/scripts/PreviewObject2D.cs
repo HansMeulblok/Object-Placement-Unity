@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PreviewObject : MonoBehaviour
+public class PreviewObject2D : MonoBehaviour
 {
     [HideInInspector]   
     public List<string> tags = new List<string>();

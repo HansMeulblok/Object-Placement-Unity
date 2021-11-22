@@ -19,11 +19,11 @@ namespace Tests
             objectPlacement = objectPlacementObject.GetComponent<ObjectPlacement>();
         }
 
-        [TearDown]
-        public void Teardown()
-        {
-            Object.Destroy(objectPlacement.gameObject);
-        }
+        // [TearDown]
+        // public void Teardown()
+        // {
+        //     Object.Destroy(objectPlacement.gameObject);
+        // }
 
         [UnityTest]
         public IEnumerator ObjectSpawn()

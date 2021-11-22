@@ -38,7 +38,14 @@ public class ObjectPlacement : MonoBehaviour
 
     void Update()
     {
-        Update2DPreview();
+        if(Mode2D)
+        {
+            Update2DPreview();
+        }
+        else
+        {
+            Update3DPreview();
+        }
 
         mousePos = Input.mousePosition;
         if(mousePos == Vector3.zero)
@@ -104,6 +111,11 @@ public class ObjectPlacement : MonoBehaviour
     {
         RotateObject();
         previewObject.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+    }
+
+    private void Update3DPreview()
+    {
+        
     }
 
     private void Init2DPreviewObject()

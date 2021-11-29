@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class Tests
+    public class ObjectPlacementTests
     {
         private ObjectPlacement objectPlacement;
         // A Test behaves as an ordinary method

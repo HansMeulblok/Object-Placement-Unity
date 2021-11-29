@@ -11,7 +11,9 @@ public class ObjectPlacement : MonoBehaviour
     [HideInInspector] 
     public int scrollWheelInput;
     public bool Mode2D = true;
-    [SerializeField] private GameObject prefab;
+    [SerializeField] private GameObject prefab2D;
+    [SerializeField] private GameObject prefab3D;
+
     [SerializeField] private List<string> colliderTags = new List<string>();
     private Vector3 mousePos;
     private Camera cam;
@@ -19,6 +21,7 @@ public class ObjectPlacement : MonoBehaviour
     private GameObject currentObject;
     private Color previewColour;
     private bool objectPlacementActive = true;
+    private int layermask = 7;
 
     void Start()
     {
@@ -26,12 +29,12 @@ public class ObjectPlacement : MonoBehaviour
 
         if(Mode2D)
         {
-            Debug.Log("2d mode");
+            Debug.Log("2D mode");
             Init2DPreviewObject(); 
         }
         else
         {
-            Debug.Log("3d mode");
+            Debug.Log("3D mode");
             Init3DPreviewObject();
         }
     }
@@ -70,6 +73,10 @@ public class ObjectPlacement : MonoBehaviour
         {
             scrollWheelInput = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
         }
+        else
+        {
+            scrollWheelInput = 0;
+        }
 
         if(scrollWheelInput != 0)
         {
@@ -80,7 +87,14 @@ public class ObjectPlacement : MonoBehaviour
     }
     public void SpawnObject()
     {
-        currentObject = Instantiate(prefab, previewObject.transform.position, previewObject.transform.rotation);
+        if(Mode2D)
+        {
+            currentObject = Instantiate(prefab2D, previewObject.transform.position, previewObject.transform.rotation);
+        }
+        else
+        {
+            currentObject = Instantiate(prefab3D, previewObject.transform.position, previewObject.transform.rotation);
+        }
     }
 
     public void setPlacementMode(bool placementState)
@@ -115,12 +129,17 @@ public class ObjectPlacement : MonoBehaviour
 
     private void Update3DPreview()
     {
-        
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit, 100, layermask))
+        {
+            previewObject.transform.position = hit.point;
+        }
     }
 
     private void Init2DPreviewObject()
     {
-        previewObject = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+        previewObject = Instantiate(prefab2D, new Vector3(0, 0, 0), Quaternion.identity);
 
         previewColour = previewObject.GetComponent<SpriteRenderer>().color;
         previewColour.a = 0.5f;
@@ -155,8 +174,7 @@ public class ObjectPlacement : MonoBehaviour
 
     private void Init3DPreviewObject()
     {
-        previewObject = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
-
+        previewObject = Instantiate(prefab3D, new Vector3(0, 0, 0), Quaternion.identity);
         previewColour = previewObject.GetComponent<MeshRenderer>().material.color;
         previewColour.a = 0.5f;
         previewObject.GetComponent<MeshRenderer>().material.color = previewColour;

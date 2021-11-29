@@ -46,6 +46,9 @@ MonoBehaviour:
   isColliding: 0
   worldPos: {x: 0, y: 0, z: 0}
   scrollWheelInput: 0
-  Mode2D: 1
-  prefab: {fileID: 8783167735801709339, guid: 2ff23bcd327b2ce4b890844c3e4650e2, type: 3}
+  Mode2D: 0
+  prefab2D: {fileID: 8783167735801709339, guid: 2ff23bcd327b2ce4b890844c3e4650e2,
+    type: 3}
+  prefab3D: {fileID: 6050012178314714322, guid: 4e83a5b5376a9764796793397d3f39c1,
+    type: 3}
   colliderTags: []

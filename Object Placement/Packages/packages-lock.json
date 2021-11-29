@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "bloons.objectplacement": {
+      "version": "file:bloons.objectplacement",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.collab-proxy": {
       "version": "1.10.2",
       "depth": 0,

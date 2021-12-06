@@ -11,16 +11,16 @@ public class ObjectPlacement : MonoBehaviour
     [HideInInspector] 
     public int scrollWheelInput;
     public bool Mode2D = true;
-    [SerializeField] private GameObject prefab2D;
-    [SerializeField] private GameObject prefab3D;
-
+    public bool singlePlacement;
+    [SerializeField] public GameObject prefab2D;
+    [SerializeField] public GameObject prefab3D;
     [SerializeField] private List<string> colliderTags = new List<string>();
     private Vector3 mousePos;
     private Camera cam;
     private GameObject previewObject;
     private GameObject currentObject;
     private Color previewColour;
-    private bool objectPlacementActive = true;
+    public bool objectPlacementActive = true;
     private int layermask = 7;
 
     void Start()
@@ -41,6 +41,16 @@ public class ObjectPlacement : MonoBehaviour
 
     void Update()
     {
+        if(!objectPlacementActive)
+        {
+            previewObject.SetActive(false);
+            return;
+        }
+        else
+        {
+            previewObject.SetActive(true);
+        }
+        
         if(Mode2D)
         {
             Update2DPreview();
@@ -64,6 +74,10 @@ public class ObjectPlacement : MonoBehaviour
         if(Input.GetButtonDown("Fire1") && objectPlacementActive && !isColliding)
         {
             SpawnObject();
+            if(singlePlacement)
+            {
+                objectPlacementActive = false;
+            }
         }
     }
 
@@ -109,6 +123,11 @@ public class ObjectPlacement : MonoBehaviour
     public GameObject GetCurrentObject()
     {
         return currentObject;
+    }
+    
+    public void setPreviewObject(GameObject go)
+    {
+        previewObject = go;
     }
 
     public bool IsColliding()
@@ -170,6 +189,7 @@ public class ObjectPlacement : MonoBehaviour
         {
             previewObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         }
+        previewObject.SetActive(false);
     }
 
     private void Init3DPreviewObject()
@@ -204,7 +224,7 @@ public class ObjectPlacement : MonoBehaviour
         {
             previewObject.GetComponent<Rigidbody>().useGravity = false;
         }
-
+        previewObject.SetActive(false);
 
     }
 }

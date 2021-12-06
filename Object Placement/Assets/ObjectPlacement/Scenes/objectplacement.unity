@@ -154,10 +154,12 @@ MonoBehaviour:
   worldPos: {x: 0, y: 0, z: 0}
   scrollWheelInput: 0
   Mode2D: 1
+  singlePlacement: 0
   prefab2D: {fileID: 4489416386419207932, guid: e2f7a0403a0b890458887ee38296efd7,
     type: 3}
   prefab3D: {fileID: 0}
   colliderTags: []
+  objectPlacementActive: 0
 --- !u!4 &867370908
 Transform:
   m_ObjectHideFlags: 0

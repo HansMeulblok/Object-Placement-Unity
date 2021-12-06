@@ -27,12 +27,12 @@ public class ObjectPlacement : MonoBehaviour
     {
         cam = Camera.main;
 
-        if(Mode2D)
+        if(Mode2D && prefab2D != null)
         {
             Debug.Log("2D mode");
             Init2DPreviewObject(); 
         }
-        else
+        else if(prefab3D != null)
         {
             Debug.Log("3D mode");
             Init3DPreviewObject();
@@ -41,12 +41,12 @@ public class ObjectPlacement : MonoBehaviour
 
     void Update()
     {
-        if(!objectPlacementActive)
+        if(!objectPlacementActive && previewObject != null)
         {
             previewObject.SetActive(false);
             return;
         }
-        else
+        else if(previewObject != null)
         {
             previewObject.SetActive(true);
         }
@@ -166,11 +166,6 @@ public class ObjectPlacement : MonoBehaviour
 
     private void Init2DPreviewObject()
     {
-        if(previewObject != null)
-        {
-            Destroy(previewObject);
-        }
-
         previewObject = Instantiate(prefab2D, new Vector3(0, 0, 0), Quaternion.identity);
 
         previewColour = previewObject.GetComponent<SpriteRenderer>().color;

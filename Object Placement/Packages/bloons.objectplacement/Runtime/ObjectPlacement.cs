@@ -128,6 +128,14 @@ public class ObjectPlacement : MonoBehaviour
     public void setPreviewObject(GameObject go)
     {
         previewObject = go;
+        if(Mode2D)
+        {
+            Init2DPreviewObject();
+        }
+        else
+        {
+            Init3DPreviewObject();
+        }
     }
 
     public bool IsColliding()
@@ -158,6 +166,11 @@ public class ObjectPlacement : MonoBehaviour
 
     private void Init2DPreviewObject()
     {
+        if(previewObject != null)
+        {
+            Destroy(previewObject);
+        }
+
         previewObject = Instantiate(prefab2D, new Vector3(0, 0, 0), Quaternion.identity);
 
         previewColour = previewObject.GetComponent<SpriteRenderer>().color;
@@ -194,6 +207,11 @@ public class ObjectPlacement : MonoBehaviour
 
     private void Init3DPreviewObject()
     {
+        if(previewObject != null)
+        {
+            Destroy(previewObject);
+        }
+
         previewObject = Instantiate(prefab3D, new Vector3(0, 0, 0), Quaternion.identity);
         previewColour = previewObject.GetComponent<MeshRenderer>().material.color;
         previewColour.a = 0.5f;

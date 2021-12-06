@@ -1,7 +1,7 @@
 {
-    "name": "bloons.objectplacement",
-    "version": "0.4.0",
-    "displayName": "Object Placement",
-    "description": "A tool that lets you play 2D and 3D object during runtime.",
-    "unity": "2019.4"
+  "name": "bloons.objectplacement",
+  "version": "0.5.0",
+  "displayName": "Object Placement",
+  "description": "A tool that lets you play 2D and 3D object during runtime.",
+  "unity": "2019.4"
 }

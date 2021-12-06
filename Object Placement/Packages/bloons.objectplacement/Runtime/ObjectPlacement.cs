@@ -71,7 +71,7 @@ public class ObjectPlacement : MonoBehaviour
         }
 
         
-        if(Input.GetButtonDown("Fire1") && objectPlacementActive && !isColliding)
+        if(Input.GetButtonDown("Fire1") && objectPlacementActive && !isColliding && previewObject != null)
         {
             SpawnObject();
             if(singlePlacement)
@@ -83,7 +83,7 @@ public class ObjectPlacement : MonoBehaviour
 
     void RotateObject()
     {
-        if((int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100) > 0 )
+        if(Input.GetAxis("Mouse ScrollWheel")  > 0 ||Input.GetAxis("Mouse ScrollWheel")  < 0 )
         {
             scrollWheelInput = (int)Mathf.Round(Input.GetAxis("Mouse ScrollWheel") * 100);
         }
@@ -150,6 +150,9 @@ public class ObjectPlacement : MonoBehaviour
 
     private void Update2DPreview()
     {
+        if(previewObject == null)
+        return;
+
         RotateObject();
         previewObject.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
     }
